@@ -1,65 +1,41 @@
 <!doctype html>
-<html lang="en" ng-app="ShoppingListCheckOff">
+<html lang="en" ng-app="NarrowItDownApp">
     <head>
-        <title>Shopping List Check Off</title>
+        <title>Narrow Down Your Menu Choice</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="styles/bootstrap.min.css">
+        <link rel="stylesheet" href="styles/styles.css">
         <script src="angular.min.js"></script>
         <script src="app.js"></script>
-        <style>
-            .emptyMessage {
-                font-weight: bold;
-                color: red;
-                font-size: 1.2em;
-            }
-            li {
-                margin-bottom: 7px;
-                font-size: 1.2em;
-            }
-            li > button {
-                margin-left: 6px;
-            }
-            button > span {
-                color: green;
-            }
-
-        </style>
     </head>
     <body>
-        <div class="container">
-            <h1>Shopping List Check Off</h1>
+        <div class="container" ng-controller="NarrowItDownController as narrowCtl">
+            <h1>Narrow Down Your Chinese Menu Choice</h1>
 
-            <div class="row">
-
-                <!-- To Buy List -->
-                <div class="col-md-6" ng-controller="ShoppingListBuyController as ToBuyController">
-                    <h2>To Buy:</h2>
-                    <ul>
-                        <li ng-repeat="item in ToBuyController.items">
-                            Buy
-                            {{ item.quantity }}
-                            {{ item.name }}
-                            <button class="btn btn-default" ng-click="ToBuyController.buyItem($index)">
-                                <span class="glyphicon glyphicon-ok"></span>Bought
-                            </button>
-                        </li>
-                    </ul>
-                    <div ng-if="ToBuyController.items.length==0" class="emptyMessage">Everything is bought!</div>
-                </div>
-
-                <!-- Already Bought List -->
-                <div class="col-md-6" ng-controller="ShoppingListBoughtController as AlreadyBoughtController">
-                    <h2>Already Bought:</h2>
-                    <ul>
-                        <li ng-repeat="item in AlreadyBoughtController.items">
-                            Bought
-                            {{ item.quantity }}
-                            {{ item.name }}
-                        </li>
-                    </ul>
-                    <div ng-if="AlreadyBoughtController.items.length==0" class="emptyMessage">Nothing bought yet.</div>
-                </div>
+            <div class="form-group">
+                <input type="text" placeholder="search term" class="form-control" ng-model="searchTerm">
             </div>
+            <div class="form-group narrow-button">
+                <button class="btn btn-primary" ng-click="narrowCtl.getFoundItems(searchTerm);">Narrow It Down For Me!</button>
+            </div>
+            <div class="col-md-12">
+                <table class="tg" ng-if="narrowCtl.foundItems && narrowCtl.foundItems.length > 0" >
+                    <tr ng-hide="!narrowCtl.foundItems">
+                        <th>Name</th>
+                        <th>Short Name</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr ng-repeat="item in narrowCtl.foundItems">
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.short_name }}</td>
+                        <td>{{ item.description }}</td>
+                    </tr>
+                    <tr ng-hide="narrowCtl.foundItems">
+                        <td rowspan="3">Nothing found</td>
+                    </tr>
+                </table>
+            </div>
+
         </div>
 
     </body>
