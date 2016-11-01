@@ -1,69 +1,46 @@
 (function() {
     'use strict';
 
-    angular.module('ShoppingListCheckOff', [])
-        .controller('ShoppingListBuyController', ShoppingListBuyController)
-        .controller('ShoppingListBoughtController', ShoppingListBoughtController)
-        .service('ShoppingListCheckOffService', ShoppingListCheckOffService);
+    angular.module('NarrowItDownApp', [])
+        .controller('NarrowItDownController', NarrowItDownController)
+        .service('MenuSearchService', MenuSearchService)
+        .constant('ApiBasePath', "https://davids-restaurant.herokuapp.com");
 
-    ShoppingListBuyController.$inject = ['ShoppingListCheckOffService'];
+    NarrowItDownController.$inject = ['MenuSearchService'];
 
-    function ShoppingListBuyController(ShoppingListCheckOffService) {
-        var ToBuyController = this;
-        ToBuyController.items = ShoppingListCheckOffService.getShoppingList();
-
-        ToBuyController.buyItem = function(itemIndex) {
-            console.log("itemIndex: ", itemIndex);
-            ShoppingListCheckOffService.buyItem(itemIndex);
+    function NarrowItDownController(MenuSearchService) {
+        var narrowCtl = this;
+        narrowCtl.getFoundItems = function(searchTerm) {
+            MenuSearchService.getMatchedMenuItems(searchTerm)
+                .then(function(data) {
+                    narrowCtl.foundItems = data;
+                }).catch(function(error) {
+                });
         };
     }
 
-    ShoppingListBoughtController.$inject = ['ShoppingListCheckOffService'];
+    MenuSearchService.$inject = ['$http', 'ApiBasePath'];
 
-    function ShoppingListBoughtController(ShoppingListCheckOffService) {
-        var AlreadyBoughtController = this;
-        AlreadyBoughtController.items = ShoppingListCheckOffService.getShoppedList();
-    }
-
-    function ShoppingListCheckOffService() {
-        var service = this;
-
-        // List of to buy items
-        var shoppingList = [{
-            name: "Cookies",
-            quantity: 10
-        }, {
-            name: "Cake",
-            quantity: 1
-        }, {
-            name: "Donuts",
-            quantity: 12
-        }, {
-            name: "Eggs",
-            quantity: 24
-        }, {
-            name: "Tomatos",
-            quantity: 5
-        }, {
-            name: "Butter",
-            quantity: 2
-        }];
-        // List of bought items
-        var shoppedList = [];
-
-        service.buyItem = function(itemIdex) {
-            console.log("itemIdex: ", itemIdex);
-            shoppedList.push(shoppingList[itemIdex]);
-            shoppingList.splice(itemIdex, 1);
-        };
-
-        service.getShoppingList = function() {
-            return shoppingList;
-        };
-
-        service.getShoppedList = function() {
-            return shoppedList;
-        };
+    function MenuSearchService($http, ApiBasePath) {
+        return {
+            getMatchedMenuItems: function(searchTerm) {
+                return $http({
+                    method: "GET",
+                    url: (ApiBasePath + "/menu_items.json")
+                }).then(function(result) {
+                    var menuItems = result.data.menu_items;
+                    var foundItems = [];
+                    var item;
+                    for (var index = 0; index < menuItems.length; ++index) {
+                        item = menuItems[index];
+                        if (item.description.indexOf(searchTerm) >= 0) {
+                            foundItems.push(item);
+                        }
+                    }
+                  return foundItems;
+                });
+            }
+        }
     }
 
 })();
