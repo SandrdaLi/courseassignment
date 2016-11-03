@@ -1,0 +1,23 @@
+<div>
+    <table class="table table-striped" ng-if="list.items && list.items.length != 0">
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Short Name</th>
+            <th>Description</th>
+        </tr>
+        <tr ng-repeat="item in list.items">
+            <td>
+                <button class="btn btn-default" ng-click="list.onRemove({index: $index});">
+                    <span class="glyphicon glyphicon-ok"></span>Don't want this one!
+                </button>
+            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.short_name }}</td>
+            <td>{{ item.description }}</td>
+        </tr>
+    </table>
+    <div ng-if="list.nothingFound()" class="col-md-8 alert alert-info">
+        Nothing found.
+    </div>
+</div>
