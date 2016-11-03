@@ -18,24 +18,7 @@
             <div class="form-group narrow-button">
                 <button class="btn btn-primary" ng-click="narrowCtl.getFoundItems(searchTerm);">Narrow It Down For Me!</button>
             </div>
-            <div class="col-md-12">
-                <table class="tg" ng-if="narrowCtl.foundItems && narrowCtl.foundItems.length > 0" >
-                    <tr ng-hide="!narrowCtl.foundItems">
-                        <th>Name</th>
-                        <th>Short Name</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr ng-repeat="item in narrowCtl.foundItems">
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.short_name }}</td>
-                        <td>{{ item.description }}</td>
-                    </tr>
-                    <tr ng-hide="narrowCtl.foundItems">
-                        <td rowspan="3">Nothing found</td>
-                    </tr>
-                </table>
-            </div>
-
+            <menu-list items="narrowCtl.foundItems" on-remove="narrowCtl.removeItem(index)"></menu-list >
         </div>
 
     </body>
