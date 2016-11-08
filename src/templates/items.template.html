@@ -1,0 +1,14 @@
+<div>
+    <table class="table table-striped" ng-if="itemDetail.items && itemDetail.items != 0">
+        <tr>
+            <th>Name</th>
+            <th>Short Name</th>
+            <th>Description</th>
+        </tr>
+        <tr ng-repeat="item in itemDetail.items">
+            <td>{{ item.name }}</td>
+            <td>{{ item.short_name }}</td>
+            <td>{{ item.description }}</td>
+        </tr>
+    </table>
+</div>
